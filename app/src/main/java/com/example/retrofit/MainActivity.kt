@@ -1,16 +1,15 @@
 package com.example.retrofit
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.retrofit.model.Comment
 import com.example.retrofit.model.JsonPlaceHolderApi
 import com.example.retrofit.model.Post
-import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,6 +17,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var jsonPlaceHolderApi: JsonPlaceHolderApi
+
     private lateinit var textViewResult: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,18 +29,30 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-
         textViewResult = findViewById(R.id.text_view_result)
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://jsonplaceholder.typicode.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi::class.java)
+        getPost(6)
+//        getComments(4)
 
-        val jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi::class.java)
 
-        val call = jsonPlaceHolderApi.getPosts()
+    }
+
+    private fun getPost(userId: Int) {
+//        textViewResult = findViewById(R.id.text_view_result)
+//
+//        val retrofit = Retrofit.Builder()
+//            .baseUrl("https://jsonplaceholder.typicode.com/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+
+//        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi::class.java)
+
+        val call = jsonPlaceHolderApi.getPosts(userId)
 
         call.enqueue(object : Callback<MutableList<Post>> {
             override fun onResponse(
@@ -73,9 +86,53 @@ class MainActivity : AppCompatActivity() {
                     "Something went wrong ${t.toString()}",
                     Toast.LENGTH_SHORT
                 ).show()
-                textViewResult.text="Some error"
+                textViewResult.text = "Some error"
             }
 
         })
     }
+
+    private fun getComments(postId: Int) {
+        val call = jsonPlaceHolderApi.getComments(postId)
+
+        call.enqueue(object : Callback<MutableList<Comment>> {
+            override fun onResponse(
+                call: Call<MutableList<Comment>>,
+                response: Response<MutableList<Comment>>
+            ) {
+                if (response.isSuccessful) {
+                    val comments = response.body()
+
+                    for (comment in comments!!) {
+                        var content = ""
+                        content += "ID: " + comment.id + "\n"
+                        content += "Post ID: " + comment.postId + "\n"
+                        content += "Name: " + comment.name + "\n"
+                        content += "Email: " + comment.email + "\n"
+                        content += "Text: " + comment.text + "\n\n"
+
+                        textViewResult.append(content)
+                    }
+                }
+            }
+
+            override fun onFailure(
+                call: Call<MutableList<Comment>?>,
+                t: Throwable
+            ) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Something went wrong ${t.toString()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                textViewResult.text = "Some error"
+            }
+
+
+        })
+
+
+    }
 }
+
+
