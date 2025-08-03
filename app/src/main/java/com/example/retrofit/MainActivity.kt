@@ -36,23 +36,25 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi::class.java)
-        getPost(6)
+        getPost(listOf(6,3), "id", "desc")
 //        getComments(4)
 
 
     }
 
-    private fun getPost(userId: Int) {
-//        textViewResult = findViewById(R.id.text_view_result)
-//
-//        val retrofit = Retrofit.Builder()
-//            .baseUrl("https://jsonplaceholder.typicode.com/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
+    private fun getPost(
+        userId: List<Int>,
+//        userId2: Int,
+        id: String,
+        order: String
+    ) {
 
-//        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi::class.java)
-
-        val call = jsonPlaceHolderApi.getPosts(userId)
+        val call = jsonPlaceHolderApi.getPosts(
+            userId,
+//            userId2,
+            id,
+            order
+        )
 
         call.enqueue(object : Callback<MutableList<Post>> {
             override fun onResponse(
