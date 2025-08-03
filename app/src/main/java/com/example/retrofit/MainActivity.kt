@@ -21,9 +21,11 @@ class MainActivity : AppCompatActivity() {
 
         val gson = Gson()
 
-        val employee = Employee("John Doe", 30, "johnDoe@example.com")
+        val address=Address("USA","New-York")
+        val employee = Employee("John Doe", 30, "johnDoe@example.com",address)
 
         val json = gson.toJson(employee)
+        Log.d("json", json)
 
 
 
@@ -34,10 +36,10 @@ class MainActivity : AppCompatActivity() {
 //            "name": "John Doe"
 //        }
 
-        val json2="{\"firstName\":\"John\",\"age\":30,\"mail\":\"johnDoe@example.com\",\"name\":\"John Doe\"}"
-
-        val employee2 = gson.fromJson(json2, Employee::class.java)
-        Log.d("json2", json2)
-        println(json2)
+//        val json2="{\"firstName\":\"John\",\"age\":30,\"mail\":\"johnDoe@example.com\",\"name\":\"John Doe\"}"
+//
+//        val employee2 = gson.fromJson(json2, Employee::class.java)
+//        Log.d("json2", json2)
+//        println(json2)
     }
 }

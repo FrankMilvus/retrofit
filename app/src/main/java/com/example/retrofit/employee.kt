@@ -1,5 +1,12 @@
 package com.example.retrofit
 
-data class Employee(val name: String, val age: Int, val mail: String){
+import com.google.gson.annotations.SerializedName
+
+data class Employee(
+    @SerializedName ("first_name") val mFirstName: String,
+    @SerializedName ("age") val mAge: Int,
+    @SerializedName ("mail") val mMail: String,
+    @SerializedName ("address") val mAddress: Address,
+){
 
 }
